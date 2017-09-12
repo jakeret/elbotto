@@ -6,14 +6,15 @@ from elbotto.messages import MessageType
 
 logger = logging.getLogger(__name__)
 
-class Bot(object):
+
+class BaseBot(object):
 
     connection = None
 
-    def __init__(self, name, game_strategy):
+    def __init__(self, name):
         self.name = name
         self.session_name = name
-        self.game_strategy = game_strategy
+        self.teams = None
         self.handCards= []
 
     def handle_message(self, message):
@@ -39,14 +40,10 @@ class Bot(object):
             self.handCards = data
 
         elif message_type == MessageType.REQUEST_TRUMPF["name"]:
-            #CHALLENGE2017: Ask the brain which gameMode to choose
-            gameMode = self.game_strategy.chooseTrumpf(self.handCards)
-            answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], gameMode)
+            answer = self.handle_request_trumpf(answer)
             
         elif message_type == MessageType.REQUEST_CARD["name"]:
-            #CHALLENGE2017: Ask the brain which card to choose
-            card = self.game_strategy.chooseCard(self.handCards, data)
-            answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
+            answer = self.handle_request_card(data)
             
         elif message_type == MessageType.PLAYED_CARDS["name"]:
             #CHALLENGE2017: This removes a handcard if the last played card on the table was one of yours.
@@ -62,25 +59,18 @@ class Bot(object):
             # })
             
         elif message_type == MessageType.REJECT_CARD["name"]:
-            #CHALLENGE2017: When server sends this, you send an invalid card... this should never happen!
-            # Server will send "REQUEST_CARD" after this once. Make sure you choose a valid card or your bot will loose the game
-            logger.warning(" ######   SERVER REJECTED CARD   #######")
-            pickedCard = self.game_strategy.chooseCard(self.handCards, [])
-            logger.warning("Rejected card: %s", data)
-            logger.warning("Picked card: %s", pickedCard)
-            logger.warning("Hand Cards: %s", self.handCards)
-            logger.warning("cardsAtTable %s", self.game_strategy.cardsAtTable)
-            logger.warning("Gametype: %s | %s", self.game_strategy.gameType["mode"], self.game_strategy.gameType["trumpfColor"])
+            self.handle_reject_card(data)
             
         elif message_type == MessageType.BROADCAST_GAME_FINISHED["name"]:
-            #Do nothing with that :-)
-            pass
+            self.handle_game_finished()
+
         elif message_type == MessageType.BROADCAST_SESSION_JOINED["name"]:
-            #Do nothing with that :-)
-            pass
+            self.player = data["player"]
+            self.players_in_session = data["playersInSession"]
+
         elif message_type == MessageType.BROADCAST_STICH["name"]:
-            #Do nothing with that :-)
-            pass
+            self.handle_stich(data)
+
         elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED["name"]:
             #Do nothing with that :-)
             pass
@@ -88,11 +78,14 @@ class Bot(object):
             #Do nothing with that :-)
             pass
         elif message_type == MessageType.BROADCAST_TEAMS["name"]:
-            #Do nothing with that :-)
-            pass
+            self.teams = data
+            for team in self.teams:
+                if team.is_member(self.player):
+                    self.my_team = team
+
         elif message_type == MessageType.BROADCAST_TRUMPF["name"]:
-            self.game_strategy.gameMode(data)
-            pass
+            self.handle_trumpf(data)
+
         elif message_type == MessageType.BROADCAST_WINNER_TEAM["name"]:
             #Do nothing with that :-)
             pass
@@ -101,3 +94,55 @@ class Bot(object):
 
         if answer:
             self.connection.send(answer)
+
+    def handle_request_trumpf(self, answer):
+        # CHALLENGE2017: Ask the brain which gameMode to choose
+        gameMode = {
+            "mode": "TRUMPF",
+            "trumpfColor": "HEARTS"
+        }
+        answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], gameMode)
+        return answer
+
+    def handle_trumpf(self, data):
+        self.geschoben = data["mode"] == "SCHIEBE"  # just remember if it's a geschoben match
+        self.gameType = data
+
+    def handle_stich(self, data):
+        # Do nothing with that :-)
+        pass
+
+    def handle_game_finished(self):
+        # Do nothing with that :-)
+        pass
+
+    def handle_reject_card(self, data):
+        # CHALLENGE2017: When server sends this, you send an invalid card... this should never happen!
+        # Server will send "REQUEST_CARD" after this once. Make sure you choose a valid card or your bot will loose the game
+        logger.warning(" ######   SERVER REJECTED CARD   #######")
+        logger.warning("Rejected card: %s", data)
+        logger.warning("Hand Cards: %s", self.handCards)
+        logger.warning("Gametype: %s | %s", self.gameType["mode"], self.gameType["trumpfColor"])
+
+    def handle_request_card(self, data):
+        # CHALLENGE2017: Ask the brain which card to choose
+        card = self.handCards[0]
+        answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
+        return answer
+
+    def won(self, winner):
+        return self.player == winner
+
+    def round_points(self, scores):
+        for score in scores:
+            if self.my_team.name == score.team_name:
+                return score.current_round_points
+
+        return 0
+
+    def total_points(self, scores):
+        for score in scores:
+            if self.my_team.name == score.team_name:
+                return score.points
+
+        return 0

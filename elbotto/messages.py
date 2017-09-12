@@ -1,6 +1,48 @@
 from elbotto.card import Card
 
 
+class RoundScore(object):
+
+    def __init__(self, name, points, currentRoundPoints):
+        self.team_name = name
+        self.points = points
+        self.current_round_points = currentRoundPoints
+
+
+class Team(object):
+
+    def __init__(self, name, players):
+        self.name = name
+        self.players = players
+
+    def is_member(self, player):
+        for member in self.players:
+            if member.id == player.id:
+                return True
+
+        return False
+
+    def __eq__(self, other):
+        return self.name == other.name
+
+    def __repr__(self):
+        return "%s %s"%(self.name, self.players)
+
+
+class Player(object):
+
+    def __init__(self, id, seatId, name):
+        self.id = id
+        self.seatId = seatId
+        self.name = name
+
+    def __eq__(self, other):
+        return self.id == other.id
+
+    def __repr__(self):
+        return "%s [%s] [%s]"%(self.name, self.seatId, self.id)
+
+
 class MessageType(object):
     
     REQUEST_PLAYER_NAME = dict( 
@@ -200,7 +242,12 @@ def createChoosePlayerName(playerName):
         data = playerName
     )
 
-def createBroadcastTeams(teams):
+def createBroadcastTeams(data):
+    teams = []
+    for team_info in data:
+        team = Team(team_info["name"], [Player(**player_info) for player_info in team_info["players"]])
+        teams.append(team)
+
     return dict(
         type = MessageType.BROADCAST_TEAMS["name"],
         data = teams
@@ -236,10 +283,17 @@ def createBroadcastTrumpf(gameType):
         data = gameType
     )
 
-def createBroadcastStich(winner):
+def createBroadcastStich(data):
+    score = [RoundScore(**score) for score in data.pop("teams")]
+
     return dict(
         type = MessageType.BROADCAST_STICH["name"],
-        data = winner
+        # data = winner
+        data = dict(
+            score = score,
+            playedCards = [Card.create(**card) for card in data.pop("playedCards")],
+            winner = Player(**data)
+        )
     )
 
 def createBroadcastGameFinished(teams):
@@ -312,8 +366,8 @@ def createBroadcastSessionJoined(data):
         type = MessageType.BROADCAST_SESSION_JOINED["name"],
         data = {
             "sessionName":data["sessionName"],
-            "player": data["player"],
-            "playersInSession": data["playersInSession"]
+            "player": Player(**data["player"]),
+            "playersInSession": [Player(**player) for player in data["playersInSession"]]
         }
     )
 
