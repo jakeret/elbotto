@@ -1,6 +1,19 @@
 from elbotto.card import Card
 
 
+class GameType(object):
+
+    def __init__(self, mode, trumpfColor):
+        self.mode = mode
+        self.trump_color = trumpfColor
+
+    def __repr__(self):
+        return "% s | % s"%(self.mode, self.trump_color)
+
+    def to_dict(self):
+        return dict(mode = self.mode,
+                    trumpfColor = self.trump_color)
+
 class RoundScore(object):
 
     def __init__(self, name, points, currentRoundPoints):
@@ -268,19 +281,19 @@ def createRequestTrumpf(geschoben):
 def createRejectTrumpf(gameType):
     return dict(
         type = MessageType.REJECT_TRUMPF["name"],
-        data = gameType
+        data = GameType(**gameType)
     )
 
 def createChooseTrumpf(gameType):
     return dict(
         type = MessageType.CHOOSE_TRUMPF["name"],
-        data = gameType
+        data = gameType.to_dict()
     )
 
 def createBroadcastTrumpf(gameType):
     return dict(
         type = MessageType.BROADCAST_TRUMPF["name"],
-        data = gameType
+        data = GameType(**gameType)
     )
 
 def createBroadcastStich(data):
@@ -288,7 +301,6 @@ def createBroadcastStich(data):
 
     return dict(
         type = MessageType.BROADCAST_STICH["name"],
-        # data = winner
         data = dict(
             score = score,
             playedCards = [Card.create(**card) for card in data.pop("playedCards")],

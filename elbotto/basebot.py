@@ -1,11 +1,12 @@
 import json
 import logging
 
-from elbotto import messages
-from elbotto.messages import MessageType
+from elbotto import messages, card
+from elbotto.messages import MessageType, GameType
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_TRUMPF = GameType("TRUMPF", card.HEARTS)
 
 class BaseBot(object):
 
@@ -97,16 +98,12 @@ class BaseBot(object):
 
     def handle_request_trumpf(self, answer):
         # CHALLENGE2017: Ask the brain which gameMode to choose
-        gameMode = {
-            "mode": "TRUMPF",
-            "trumpfColor": "HEARTS"
-        }
-        answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], gameMode)
+        answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], DEFAULT_TRUMPF)
         return answer
 
-    def handle_trumpf(self, data):
-        self.geschoben = data["mode"] == "SCHIEBE"  # just remember if it's a geschoben match
-        self.gameType = data
+    def handle_trumpf(self, game_type):
+        self.geschoben = game_type.mode == "SCHIEBE"  # just remember if it's a geschoben match
+        self.game_type = game_type
 
     def handle_stich(self, data):
         # Do nothing with that :-)
@@ -122,7 +119,7 @@ class BaseBot(object):
         logger.warning(" ######   SERVER REJECTED CARD   #######")
         logger.warning("Rejected card: %s", data)
         logger.warning("Hand Cards: %s", self.handCards)
-        logger.warning("Gametype: %s | %s", self.gameType["mode"], self.gameType["trumpfColor"])
+        logger.warning("Gametype: %s", self.game_type)
 
     def handle_request_card(self, data):
         # CHALLENGE2017: Ask the brain which card to choose
