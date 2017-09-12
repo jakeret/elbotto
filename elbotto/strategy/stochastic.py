@@ -20,11 +20,7 @@ class Bot(BaseBot):
         answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], gameMode)
         return answer
 
-    def handle_stich(self, data):
-        winner = data["winner"]
-        won = self.won(winner)
-        round_points = self.round_points(data["score"])
-        total_points = self.total_points(data["score"])
+    def handle_stich(self, won, winner, round_points, total_points):
         logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won, winner, round_points, total_points)
 
     def handle_game_finished(self):

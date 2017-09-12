@@ -74,7 +74,11 @@ class BaseBot(object):
             self.players_in_session = data["playersInSession"]
 
         elif message_type == MessageType.BROADCAST_STICH["name"]:
-            self.handle_stich(data)
+            winner = data["winner"]
+            won = self.won(winner)
+            round_points = self.round_points(data["score"])
+            total_points = self.total_points(data["score"])
+            self.handle_stich(won, winner, round_points, total_points)
 
         elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED["name"]:
             #Do nothing with that :-)
@@ -109,7 +113,7 @@ class BaseBot(object):
         self.geschoben = game_type.mode == "SCHIEBE"  # just remember if it's a geschoben match
         self.game_type = game_type
 
-    def handle_stich(self, data):
+    def handle_stich(self, won, winner, round_points, total_points):
         # Do nothing with that :-)
         pass
 
