@@ -2,6 +2,7 @@ import json
 import logging
 
 from elbotto import messages, card
+from elbotto.connection import Connection
 from elbotto.messages import MessageType, GameType
 
 logger = logging.getLogger(__name__)
@@ -16,11 +17,15 @@ class BaseBot(object):
 
     connection = None
 
-    def __init__(self, name):
+    def __init__(self, server_address, name):
         self.name = name
         self.session_name = name
+        self.server_address = server_address
         self.teams = None
         self.handCards= []
+
+    def start(self):
+        Connection.create(self.server_address, self)
 
     def handle_message(self, message):
         answer = None
@@ -45,10 +50,12 @@ class BaseBot(object):
             self.handCards = data
 
         elif message_type == MessageType.REQUEST_TRUMPF["name"]:
-            answer = self.handle_request_trumpf(answer)
+            game_type = self.handle_request_trumpf()
+            answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], game_type)
             
         elif message_type == MessageType.REQUEST_CARD["name"]:
-            answer = self.handle_request_card(data)
+            card = self.handle_request_card(data)
+            answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
             
         elif message_type == MessageType.PLAYED_CARDS["name"]:
             #CHALLENGE2017: This removes a handcard if the last played card on the table was one of yours.
@@ -104,10 +111,9 @@ class BaseBot(object):
         if answer:
             self.connection.send(answer)
 
-    def handle_request_trumpf(self, answer):
+    def handle_request_trumpf(self):
         # CHALLENGE2017: Ask the brain which gameMode to choose
-        answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], DEFAULT_TRUMPF)
-        return answer
+        return DEFAULT_TRUMPF
 
     def handle_trumpf(self, game_type):
         self.geschoben = game_type.mode == "SCHIEBE"  # just remember if it's a geschoben match
@@ -129,11 +135,10 @@ class BaseBot(object):
         logger.warning("Hand Cards: %s", self.handCards)
         logger.warning("Gametype: %s", self.game_type)
 
-    def handle_request_card(self, data):
+    def handle_request_card(self, tableCards):
         # CHALLENGE2017: Ask the brain which card to choose
         card = self.handCards[0]
-        answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
-        return answer
+        return card
 
     def won(self, winner):
         return self.player == winner

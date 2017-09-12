@@ -1,48 +1,41 @@
 import logging
 import random
 
-from elbotto import messages
 from elbotto.basebot import BaseBot, DEFAULT_TRUMPF
-from elbotto.messages import MessageType
 
 logger = logging.getLogger(__name__)
 
 
 class Bot(BaseBot):
 
-    def __init__(self, name):
-        super(Bot, self).__init__(name)
+    def __init__(self, server_address, name):
+        super(Bot, self).__init__(server_address, name)
         self.game_strategy = PlayStrategy()
 
-    def handle_request_trumpf(self, answer):
+        self.start()
+
+    def handle_request_trumpf(self):
         # CHALLENGE2017: Ask the brain which gameMode to choose
-        gameMode = self.game_strategy.chooseTrumpf(self.handCards)
-        answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], gameMode)
-        return answer
+        return self.game_strategy.chooseTrumpf(self.handCards)
 
     def handle_stich(self, won, winner, round_points, total_points):
         logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won, winner, round_points, total_points)
 
-    def handle_game_finished(self):
-        # Do nothing with that :-)
-        pass
-
-    def handle_reject_card(self, data):
+    def handle_reject_card(self, card):
         # CHALLENGE2017: When server sends this, you send an invalid card... this should never happen!
         # Server will send "REQUEST_CARD" after this once. Make sure you choose a valid card or your bot will loose the game
         logger.warning(" ######   SERVER REJECTED CARD   #######")
         pickedCard = self.game_strategy.chooseCard(self.handCards, [])
-        logger.debug("Rejected card: %s", data)
+        logger.debug("Rejected card: %s", card)
         logger.debug("Picked card: %s", pickedCard)
         logger.debug("Hand Cards: %s", self.handCards)
         logger.debug("cardsAtTable %s", self.game_strategy.cardsAtTable)
         logger.debug("Gametype: %s", self.game_type)
 
-    def handle_request_card(self, data):
+    def handle_request_card(self, tableCards):
         # CHALLENGE2017: Ask the brain which card to choose
-        card = self.game_strategy.chooseCard(self.handCards, data)
-        answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
-        return answer
+        card = self.game_strategy.chooseCard(self.handCards, tableCards)
+        return card
 
 
 class PlayStrategy(object):
