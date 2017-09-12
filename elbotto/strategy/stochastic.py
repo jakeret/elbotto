@@ -22,9 +22,10 @@ class Bot(BaseBot):
 
     def handle_stich(self, data):
         winner = data["winner"]
+        won = self.won(winner)
         round_points = self.round_points(data["score"])
         total_points = self.total_points(data["score"])
-        logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", self.won(winner), winner, round_points, total_points)
+        logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won, winner, round_points, total_points)
 
     def handle_game_finished(self):
         # Do nothing with that :-)
@@ -35,11 +36,11 @@ class Bot(BaseBot):
         # Server will send "REQUEST_CARD" after this once. Make sure you choose a valid card or your bot will loose the game
         logger.warning(" ######   SERVER REJECTED CARD   #######")
         pickedCard = self.game_strategy.chooseCard(self.handCards, [])
-        logger.warning("Rejected card: %s", data)
-        logger.warning("Picked card: %s", pickedCard)
-        logger.warning("Hand Cards: %s", self.handCards)
-        logger.warning("cardsAtTable %s", self.game_strategy.cardsAtTable)
-        logger.warning("Gametype: %s", self.game_type)
+        logger.debug("Rejected card: %s", data)
+        logger.debug("Picked card: %s", pickedCard)
+        logger.debug("Hand Cards: %s", self.handCards)
+        logger.debug("cardsAtTable %s", self.game_strategy.cardsAtTable)
+        logger.debug("Gametype: %s", self.game_type)
 
     def handle_request_card(self, data):
         # CHALLENGE2017: Ask the brain which card to choose
@@ -68,7 +69,7 @@ class PlayStrategy(object):
         idx = random.randint(0, len(validCards)-1)
 
         card = validCards[idx]
-        logger.info("Chosen card: %s", card)
+        logger.debug("Chosen card: %s", card)
         return card
 
     def getPossibleCards(self, handCards, tableCards):

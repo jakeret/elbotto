@@ -308,17 +308,17 @@ def createBroadcastStich(data):
         )
     )
 
-def createBroadcastGameFinished(teams):
+def createBroadcastGameFinished(data):
     return dict(
         type = MessageType.BROADCAST_GAME_FINISHED["name"],
-        data = teams
+        data = [RoundScore(**score) for score in data]
     )
 
 
-def createBroadcastWinnerTeam(team):
+def createBroadcastWinnerTeam(score):
     return dict(
         type = MessageType.BROADCAST_WINNER_TEAM["name"],
-        data = team
+        data = RoundScore(**score)
     )
 
 def createPlayedCards(playedCards):
