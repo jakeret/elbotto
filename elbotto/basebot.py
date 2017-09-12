@@ -6,6 +6,10 @@ from elbotto.messages import MessageType, GameType
 
 logger = logging.getLogger(__name__)
 
+
+SESSION_TYPE_TOURNAMENT = "TOURNAMENT"
+SESSION_TYPE_SINGLE_GAME = "SINGLE_GAME"
+
 DEFAULT_TRUMPF = GameType("TRUMPF", card.HEARTS)
 
 class BaseBot(object):
@@ -33,7 +37,7 @@ class BaseBot(object):
             answer = messages.create(MessageType.CHOOSE_PLAYER_NAME["name"], self.name)
             
         elif message_type == MessageType.REQUEST_SESSION_CHOICE["name"]:
-            answer = messages.create(MessageType.CHOOSE_SESSION["name"], "AUTOJOIN", self.session_name, "TOURNAMENT", False)
+            answer = messages.create(MessageType.CHOOSE_SESSION["name"], "AUTOJOIN", self.session_name, SESSION_TYPE_SINGLE_GAME, False)
             logger.info('session choice answer: %s', answer)
             
         elif message_type == MessageType.DEAL_CARDS["name"]:
