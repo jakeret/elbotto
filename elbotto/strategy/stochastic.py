@@ -18,8 +18,9 @@ class Bot(BaseBot):
         # CHALLENGE2017: Ask the brain which gameMode to choose
         return self.game_strategy.chooseTrumpf(self.handCards)
 
-    def handle_stich(self, won, winner, round_points, total_points):
-        logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won, winner, round_points, total_points)
+    def handle_stich(self, winner, round_points, total_points):
+        won_stich = self.in_my_team(winner)
+        logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won_stich, winner, round_points, total_points)
 
     def handle_reject_card(self, card):
         # CHALLENGE2017: When server sends this, you send an invalid card... this should never happen!

@@ -1,18 +1,18 @@
-from elbotto.card import Card
+from elbotto.card import Card, Color
 
 
 class GameType(object):
 
     def __init__(self, mode, trumpfColor):
         self.mode = mode
-        self.trump_color = trumpfColor
+        self.trumpf_color = Color[trumpfColor]
 
     def __repr__(self):
-        return "% s | % s"%(self.mode, self.trump_color)
+        return "% s | % s"%(self.mode, self.trumpf_color)
 
     def to_dict(self):
         return dict(mode = self.mode,
-                    trumpfColor = self.trump_color)
+                    trumpfColor = self.trumpf_color.name)
 
 class RoundScore(object):
 
