@@ -80,7 +80,10 @@ class BaseBot(object):
             self.won_stich_in_game = []
 
         elif message_type == MessageType.BROADCAST_SESSION_JOINED["name"]:
-            self.player = data["player"]
+            player = data["player"]
+            if self.name == player.name:
+                self.player = player
+
             self.players_in_session = data["playersInSession"]
 
         elif message_type == MessageType.BROADCAST_STICH["name"]:
