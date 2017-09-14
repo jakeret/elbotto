@@ -20,12 +20,15 @@ class BaseBot(object):
 
     connection = None
 
-    def __init__(self, server_address, name):
+    def __init__(self, server_address, name, chosen_team_index=0):
         self.name = name
         self.session_name = name
         self.server_address = server_address
+        self.chosen_team_index = chosen_team_index
+
         self.teams = None
         self.handCards= []
+        self.won_stich_in_game = []
 
     def start(self):
         Connection.create(self.server_address, self)
@@ -45,7 +48,12 @@ class BaseBot(object):
             answer = messages.create(MessageType.CHOOSE_PLAYER_NAME["name"], self.name)
             
         elif message_type == MessageType.REQUEST_SESSION_CHOICE["name"]:
-            answer = messages.create(MessageType.CHOOSE_SESSION["name"], "AUTOJOIN", self.session_name, SessionType.SINGLE_GAME.name, False)
+            answer = messages.create(MessageType.CHOOSE_SESSION["name"],
+                                     "AUTOJOIN",
+                                     self.session_name,
+                                     SessionType.SINGLE_GAME.name,
+                                     False,
+                                     self.chosen_team_index)
             logger.info('session choice answer: %s', answer)
             
         elif message_type == MessageType.DEAL_CARDS["name"]:
@@ -68,6 +76,7 @@ class BaseBot(object):
             
         elif message_type == MessageType.BROADCAST_GAME_FINISHED["name"]:
             self.handle_game_finished()
+            self.won_stich_in_game = []
 
         elif message_type == MessageType.BROADCAST_SESSION_JOINED["name"]:
             self.player = data["player"]
@@ -76,6 +85,7 @@ class BaseBot(object):
         elif message_type == MessageType.BROADCAST_STICH["name"]:
             winner = data["winner"]
             won_stich = self.in_my_team(winner)
+            self.won_stich_in_game.append(won_stich)
             total_points = self.total_points(data["score"])
 
             if won_stich:

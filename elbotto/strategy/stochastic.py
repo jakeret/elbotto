@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 class Bot(BaseBot):
 
-    def __init__(self, server_address, name):
-        super(Bot, self).__init__(server_address, name)
+    def __init__(self, server_address, name, chosen_team_index=0):
+        super(Bot, self).__init__(server_address, name, chosen_team_index)
         self.game_strategy = PlayStrategy()
 
         self.start()
@@ -20,12 +20,12 @@ class Bot(BaseBot):
 
     def handle_stich(self, winner, round_points, total_points):
         won_stich = self.in_my_team(winner)
-        logger.info("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won_stich, winner, round_points, total_points)
+        logger.debug("Stich: Won:%s, Winner: %s, Round points: %s, Total points: %s", won_stich, winner, round_points, total_points)
 
     def handle_reject_card(self, card):
         # CHALLENGE2017: When server sends this, you send an invalid card... this should never happen!
         # Server will send "REQUEST_CARD" after this once. Make sure you choose a valid card or your bot will loose the game
-        logger.warning(" ######   SERVER REJECTED CARD   #######")
+        logger.debug(" ######   SERVER REJECTED CARD   #######")
         pickedCard = self.game_strategy.chooseCard(self.handCards, [])
         logger.debug("Rejected card: %s", card)
         logger.debug("Picked card: %s", pickedCard)
