@@ -16,6 +16,7 @@ class SessionType(Enum):
 
 DEFAULT_TRUMPF = GameType("TRUMPF", card.Color.HEARTS.name)
 
+
 class BaseBot(object):
 
     connection = None
@@ -37,19 +38,24 @@ class BaseBot(object):
     def handle_message(self, message):
         answer = None
 
-        message_type = message["type"]
+        type = message["type"]
+        if isinstance(type, MessageType):
+            message_type = type
+        else:
+            message_type = MessageType[type]
+
         try:
             data = message["data"]
         except KeyError:
             data = {}
 
-        if message_type == MessageType.REQUEST_PLAYER_NAME["name"]:
+        if message_type == MessageType.REQUEST_PLAYER_NAME:
             #CHALLENGE2017: Respond with your BotName
             logger.info('MyName: ' + self.name)
-            answer = messages.create(MessageType.CHOOSE_PLAYER_NAME["name"], self.name)
+            answer = messages.create(MessageType.CHOOSE_PLAYER_NAME, self.name)
             
-        elif message_type == MessageType.REQUEST_SESSION_CHOICE["name"]:
-            answer = messages.create(MessageType.CHOOSE_SESSION["name"],
+        elif message_type == MessageType.REQUEST_SESSION_CHOICE:
+            answer = messages.create(MessageType.CHOOSE_SESSION,
                                      "AUTOJOIN",
                                      self.session_name,
                                      SessionType.SINGLE_GAME.name,
@@ -57,36 +63,36 @@ class BaseBot(object):
                                      self.chosen_team_index)
             logger.info('session choice answer: %s', answer)
             
-        elif message_type == MessageType.DEAL_CARDS["name"]:
+        elif message_type == MessageType.DEAL_CARDS:
             self.last_round_points = 0
             self.handCards = data
 
-        elif message_type == MessageType.REQUEST_TRUMPF["name"]:
+        elif message_type == MessageType.REQUEST_TRUMPF:
             game_type = self.handle_request_trumpf()
-            answer = messages.create(MessageType.CHOOSE_TRUMPF["name"], game_type)
+            answer = messages.create(MessageType.CHOOSE_TRUMPF, game_type)
             
-        elif message_type == MessageType.REQUEST_CARD["name"]:
+        elif message_type == MessageType.REQUEST_CARD:
             card = self.handle_request_card(data)
-            answer = messages.create(MessageType.CHOOSE_CARD["name"], card)
+            answer = messages.create(MessageType.CHOOSE_CARD, card)
             
-        elif message_type == MessageType.PLAYED_CARDS["name"]:
+        elif message_type == MessageType.PLAYED_CARDS:
             self.handle_played_cards(data)
             
-        elif message_type == MessageType.REJECT_CARD["name"]:
+        elif message_type == MessageType.REJECT_CARD:
             self.handle_reject_card(data)
             
-        elif message_type == MessageType.BROADCAST_GAME_FINISHED["name"]:
+        elif message_type == MessageType.BROADCAST_GAME_FINISHED:
             self.handle_game_finished()
             self.won_stich_in_game = []
 
-        elif message_type == MessageType.BROADCAST_SESSION_JOINED["name"]:
+        elif message_type == MessageType.BROADCAST_SESSION_JOINED:
             player = data["player"]
             if self.name == player.name:
                 self.player = player
 
             self.players_in_session = data["playersInSession"]
 
-        elif message_type == MessageType.BROADCAST_STICH["name"]:
+        elif message_type == MessageType.BROADCAST_STICH:
             winner = data["winner"]
             won_stich = self.in_my_team(winner)
             self.won_stich_in_game.append(won_stich)
@@ -100,22 +106,22 @@ class BaseBot(object):
             self.last_round_points = round_points
             self.handle_stich(winner, round_points, total_points)
 
-        elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED["name"]:
+        elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED:
             #Do nothing with that :-)
             pass
-        elif message_type == MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE["name"]:
+        elif message_type == MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE:
             #Do nothing with that :-)
             pass
-        elif message_type == MessageType.BROADCAST_TEAMS["name"]:
+        elif message_type == MessageType.BROADCAST_TEAMS:
             self.teams = data
             for team in self.teams:
                 if team.is_member(self.player):
                     self.my_team = team
 
-        elif message_type == MessageType.BROADCAST_TRUMPF["name"]:
+        elif message_type == MessageType.BROADCAST_TRUMPF:
             self.handle_trumpf(data)
 
-        elif message_type == MessageType.BROADCAST_WINNER_TEAM["name"]:
+        elif message_type == MessageType.BROADCAST_WINNER_TEAM:
             #Do nothing with that :-)
             pass
         else:

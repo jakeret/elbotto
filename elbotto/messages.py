@@ -1,3 +1,5 @@
+from enum import Enum
+
 from elbotto.card import Card, Color
 
 
@@ -53,205 +55,45 @@ class Player(object):
         return self.id == other.id
 
     def __repr__(self):
-        return "%s [%s] [%s]"%(self.name, self.seatId, self.id)
+        return "%s [%s]"%(self.name, self.seatId)
 
 
-class MessageType(object):
-    
-    REQUEST_PLAYER_NAME = dict( 
-        name = 'REQUEST_PLAYER_NAME'
-    )
+class MessageType(Enum):
 
-    CHOOSE_PLAYER_NAME = dict( 
-        name = 'CHOOSE_PLAYER_NAME',
-        constraints = dict( 
-            type = dict( 
-                presence = True
-            ),
-            data = dict( 
-                presence = True,
-                length = dict( 
-                    minimum = 1
-                )
-            )
-        )
-    )
-    BROADCAST_TEAMS = dict( 
-        name = 'BROADCAST_TEAMS'
-    )
-
-    DEAL_CARDS = dict( 
-        name = 'DEAL_CARDS'
-    )
-
-    REQUEST_TRUMPF = dict( 
-        name = 'REQUEST_TRUMPF'
-    )
-
-    CHOOSE_TRUMPF = dict( 
-        name = 'CHOOSE_TRUMPF',
-        constraints = dict( 
-            type = dict( 
-                presence = True
-            ),
-            # data_mode = dict(
-            #     presence = True,
-            #     inclusion = dict(
-            #         within = GameMode
-            #     )
-            # ),
-            # data_trumpfColor = dict(
-            #     inclusion = dict(
-            #         within = CardColor
-            #     )
-            # )
-        )
-    )
-    REJECT_TRUMPF = dict( 
-        name = 'REJECT_TRUMPF'
-    )
-
-    BROADCAST_TRUMPF = dict( 
-        name = 'BROADCAST_TRUMPF'
-    )
-
-    BROADCAST_STICH = dict( 
-        name = 'BROADCAST_STICH'
-    )
-
-    BROADCAST_WINNER_TEAM = dict( 
-        name = 'BROADCAST_WINNER_TEAM'
-    )
-
-    BROADCAST_GAME_FINISHED = dict( 
-        name = 'BROADCAST_GAME_FINISHED'
-    )
-
-    PLAYED_CARDS = dict( 
-        name = 'PLAYED_CARDS'
-    )
-
-    REQUEST_CARD = dict( 
-        name = 'REQUEST_CARD'
-    )
-
-    CHOOSE_CARD = dict(
-        name = 'CHOOSE_CARD',
-        constraints = dict(
-            type = dict(
-                presence = True
-            ),
-            data_number = dict(
-                presence = True,
-                inclusion = dict(
-                    within = [6,7,8,9,10,11,12,13,14]
-                )
-            ),
-            data_color = dict(
-                presence = True,
-                # inclusion = dict(
-                #     within = CardColor
-                # )
-            )
-        )
-    )
-
-    REJECT_CARD = dict( 
-        name = 'REJECT_CARD'
-    )
-
-    REQUEST_SESSION_CHOICE = dict( 
-        name = 'REQUEST_SESSION_CHOICE'
-    )
-
-    CHOOSE_SESSION = dict(
-        name = 'CHOOSE_SESSION',
-        constraints = dict(
-            type = dict(
-                presence = True
-            ),
-            # data_sessionChoice = dict(
-            #     presence = True,
-            #     inclusion = dict(
-            #         within = SessionChoice
-            #     )
-            # ),
-            # data_sessionName = dict(
-            #     length = dict(
-            #         minimum = 1
-            #     )
-            # ),
-            # data_sessionType = dict(
-            #     inclusion = dict(
-            #         within = SessionType
-            #     )
-            # ),
-            # data_chosenTeamIndex = dict(
-            #     inclusion = dict(
-            #         within = [0, 1]
-            #     )
-            # ),
-            # data_asSpectator = dict(
-            #     presence = False
-            # )
-        )
-    )
-    SESSION_JOINED = dict( 
-        name = 'SESSION_JOINED'
-    )
-
-    BROADCAST_SESSION_JOINED = dict( 
-        name = 'BROADCAST_SESSION_JOINED'
-    )
-
-    BAD_MESSAGE = dict( 
-        name = 'BAD_MESSAGE'
-    )
-
-    BROADCAST_TOURNAMENT_RANKING_TABLE = dict( 
-        name = 'BROADCAST_TOURNAMENT_RANKING_TABLE'
-    )
-
-    START_TOURNAMENT = dict(
-        name = 'START_TOURNAMENT',
-        constraints = dict(
-            type = dict(
-                presence = True
-            )
-        )
-    )
-
-    BROADCAST_TOURNAMENT_STARTED = dict( 
-        name = 'BROADCAST_TOURNAMENT_STARTED'
-    )
-
-    JOIN_BOT = dict(
-        name = 'JOIN_BOT',
-        constraints = dict(
-            type = dict(
-                presence = True
-            ),
-            data_sessionName = dict(
-                presence = True
-            ),
-            data_chosenTeamIndex = dict(
-                inclusion = dict(
-                    within = [0, 1]
-                )
-            )
-        )
-    )
-
+    REQUEST_PLAYER_NAME = 'REQUEST_PLAYER_NAME'
+    CHOOSE_PLAYER_NAME = 'CHOOSE_PLAYER_NAME'
+    BROADCAST_TEAMS = 'BROADCAST_TEAMS'
+    DEAL_CARDS = 'DEAL_CARDS'
+    REQUEST_TRUMPF = 'REQUEST_TRUMPF'
+    CHOOSE_TRUMPF = 'CHOOSE_TRUMPF'
+    REJECT_TRUMPF = 'REJECT_TRUMPF'
+    BROADCAST_TRUMPF = 'BROADCAST_TRUMPF'
+    BROADCAST_STICH = 'BROADCAST_STICH'
+    BROADCAST_WINNER_TEAM = 'BROADCAST_WINNER_TEAM'
+    BROADCAST_GAME_FINISHED = 'BROADCAST_GAME_FINISHED'
+    PLAYED_CARDS = 'PLAYED_CARDS'
+    REQUEST_CARD = 'REQUEST_CARD'
+    CHOOSE_CARD = 'CHOOSE_CARD'
+    REJECT_CARD = 'REJECT_CARD'
+    REQUEST_SESSION_CHOICE = 'REQUEST_SESSION_CHOICE'
+    CHOOSE_SESSION = 'CHOOSE_SESSION',
+    SESSION_JOINED = 'SESSION_JOINED'
+    BROADCAST_SESSION_JOINED = 'BROADCAST_SESSION_JOINED'
+    BAD_MESSAGE = 'BAD_MESSAGE'
+    BROADCAST_TOURNAMENT_RANKING_TABLE = 'BROADCAST_TOURNAMENT_RANKING_TABLE'
+    START_TOURNAMENT = 'START_TOURNAMENT',
+    BROADCAST_TOURNAMENT_STARTED = 'BROADCAST_TOURNAMENT_STARTED'
+    JOIN_BOT = 'JOIN_BOT',
 
 
 def createRequestPlayerName():
     return dict(
-        type = MessageType.REQUEST_PLAYER_NAME["name"]
+        type = MessageType.REQUEST_PLAYER_NAME
     )
 
 def createChoosePlayerName(playerName):
     return dict(
-        type = MessageType.CHOOSE_PLAYER_NAME["name"],
+        type = MessageType.CHOOSE_PLAYER_NAME.name,
         data = playerName
     )
 
@@ -262,37 +104,37 @@ def createBroadcastTeams(data):
         teams.append(team)
 
     return dict(
-        type = MessageType.BROADCAST_TEAMS["name"],
+        type = MessageType.BROADCAST_TEAMS,
         data = teams
     )
 
 def createDealCards(cards):
     return dict(
-        type = MessageType.DEAL_CARDS["name"],
+        type = MessageType.DEAL_CARDS,
         data = [Card.create(item["number"], item["color"]) for item in cards]
     )
 
 def createRequestTrumpf(geschoben):
     return dict(
-        type = MessageType.REQUEST_TRUMPF["name"],
+        type = MessageType.REQUEST_TRUMPF,
         data = geschoben
     )
 
 def createRejectTrumpf(gameType):
     return dict(
-        type = MessageType.REJECT_TRUMPF["name"],
+        type = MessageType.REJECT_TRUMPF,
         data = GameType(**gameType)
     )
 
 def createChooseTrumpf(gameType):
     return dict(
-        type = MessageType.CHOOSE_TRUMPF["name"],
+        type = MessageType.CHOOSE_TRUMPF.name,
         data = gameType.to_dict()
     )
 
 def createBroadcastTrumpf(gameType):
     return dict(
-        type = MessageType.BROADCAST_TRUMPF["name"],
+        type = MessageType.BROADCAST_TRUMPF,
         data = GameType(**gameType)
     )
 
@@ -300,7 +142,7 @@ def createBroadcastStich(data):
     score = [RoundScore(**score) for score in data.pop("teams")]
 
     return dict(
-        type = MessageType.BROADCAST_STICH["name"],
+        type = MessageType.BROADCAST_STICH,
         data = dict(
             score = score,
             playedCards = [Card.create(**card) for card in data.pop("playedCards")],
@@ -310,50 +152,50 @@ def createBroadcastStich(data):
 
 def createBroadcastGameFinished(data):
     return dict(
-        type = MessageType.BROADCAST_GAME_FINISHED["name"],
+        type = MessageType.BROADCAST_GAME_FINISHED,
         data = [RoundScore(**score) for score in data]
     )
 
 
 def createBroadcastWinnerTeam(score):
     return dict(
-        type = MessageType.BROADCAST_WINNER_TEAM["name"],
+        type = MessageType.BROADCAST_WINNER_TEAM,
         data = RoundScore(**score)
     )
 
 def createPlayedCards(playedCards):
     return dict(
-        type = MessageType.PLAYED_CARDS["name"],
+        type = MessageType.PLAYED_CARDS,
         data = [Card.create(item["number"], item["color"]) for item in playedCards]
     )
 
 def createRequestCard(cards):
     return dict(
-        type = MessageType.REQUEST_CARD["name"],
+        type = MessageType.REQUEST_CARD,
         data = cards
     )
 
 def createChooseCard(card):
     return dict(
-        type = MessageType.CHOOSE_CARD["name"],
+        type = MessageType.CHOOSE_CARD.name,
         data = card.to_dict()
     )
 
 def createRejectCard(card):
     return dict(
-        type = MessageType.REJECT_CARD["name"],
+        type = MessageType.REJECT_CARD,
         data = Card.create(card["number"], card["color"])
     )
 
 def createRequestSessionChoice(*availableSessions):
     return dict(
-        type = MessageType.REQUEST_SESSION_CHOICE["name"],
+        type = MessageType.REQUEST_SESSION_CHOICE,
         data = availableSessions
     )
 
 def createChooseSession(sessionChoice="AUTOJOIN", sessionName="Session 1", sessionType="TOURNAMENT", asSpectator=False, chosenTeamIndex=0):
     return dict(
-        type = MessageType.CHOOSE_SESSION["name"],
+        type = MessageType.CHOOSE_SESSION.name,
         data = dict(
             sessionChoice=sessionChoice,
             sessionName=sessionName,
@@ -365,7 +207,7 @@ def createChooseSession(sessionChoice="AUTOJOIN", sessionName="Session 1", sessi
 
 def createSessionJoined(sessionName, player, playersInSession):
     return dict(
-        type = MessageType.SESSION_JOINED["name"],
+        type = MessageType.SESSION_JOINED,
         data = {
         sessionName,
         player,
@@ -375,7 +217,7 @@ def createSessionJoined(sessionName, player, playersInSession):
 
 def createBroadcastSessionJoined(data):
     return dict(
-        type = MessageType.BROADCAST_SESSION_JOINED["name"],
+        type = MessageType.BROADCAST_SESSION_JOINED,
         data = {
             "sessionName":data["sessionName"],
             "player": Player(**data["player"]),
@@ -385,80 +227,86 @@ def createBroadcastSessionJoined(data):
 
 def createBadMessage(message):
     return dict(
-        type = MessageType.BAD_MESSAGE["name"],
+        type = MessageType.BAD_MESSAGE,
         data = message
     )
 
 def createTournamentRankingTable(rankingTable):
     return dict(
-        type = MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE["name"],
+        type = MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE,
         data = rankingTable
     )
 
 def createStartTournament():
     return dict(
-        type = MessageType.START_TOURNAMENT["name"]
+        type = MessageType.START_TOURNAMENT
     )
 
 def createBroadcastTournamentStarted():
     return dict(
-        type = MessageType.BROADCAST_TOURNAMENT_STARTED["name"]
+        type = MessageType.BROADCAST_TOURNAMENT_STARTED
     )
 
 def createJoinBot(data):
     return dict(
-        type = MessageType.JOIN_BOT["name"],
+        type = MessageType.JOIN_BOT,
         data=data
     )
         
-def create(messageType, *args):
-    if messageType == MessageType.REQUEST_PLAYER_NAME["name"]:
+def create(type, *args):
+
+    if isinstance(type, MessageType):
+        messageType = type
+    else:
+        messageType = MessageType[type]
+
+    if messageType == MessageType.REQUEST_PLAYER_NAME:
         return createRequestPlayerName()
-    elif messageType == MessageType.CHOOSE_PLAYER_NAME["name"]:
+    elif messageType == MessageType.CHOOSE_PLAYER_NAME:
         return createChoosePlayerName(*args)
-    elif messageType == MessageType.BROADCAST_TEAMS["name"]:
+    elif messageType == MessageType.BROADCAST_TEAMS:
         return createBroadcastTeams(*args)
-    elif messageType == MessageType.DEAL_CARDS["name"]:
+    elif messageType == MessageType.DEAL_CARDS:
         return createDealCards(*args)
-    elif messageType == MessageType.REQUEST_TRUMPF["name"]:
+    elif messageType == MessageType.REQUEST_TRUMPF:
         return createRequestTrumpf(*args)
-    elif messageType == MessageType.REJECT_TRUMPF["name"]:
+    elif messageType == MessageType.REJECT_TRUMPF:
         return createRejectTrumpf(*args)
-    elif messageType == MessageType.CHOOSE_TRUMPF["name"]:
+    elif messageType == MessageType.CHOOSE_TRUMPF:
         return createChooseTrumpf(*args)
-    elif messageType == MessageType.BROADCAST_TRUMPF["name"]:
+    elif messageType == MessageType.BROADCAST_TRUMPF:
         return createBroadcastTrumpf(*args)
-    elif messageType == MessageType.BROADCAST_WINNER_TEAM["name"]:
+    elif messageType == MessageType.BROADCAST_WINNER_TEAM:
         return createBroadcastWinnerTeam(*args)
-    elif messageType == MessageType.BROADCAST_STICH["name"]:
+    elif messageType == MessageType.BROADCAST_STICH:
         return createBroadcastStich(*args)
-    elif messageType == MessageType.BROADCAST_GAME_FINISHED["name"]:
+    elif messageType == MessageType.BROADCAST_GAME_FINISHED:
         return createBroadcastGameFinished(*args)
-    elif messageType == MessageType.PLAYED_CARDS["name"]:
+    elif messageType == MessageType.PLAYED_CARDS:
         return createPlayedCards(*args)
-    elif messageType == MessageType.REQUEST_CARD["name"]:
+    elif messageType == MessageType.REQUEST_CARD:
         return createRequestCard(*args)
-    elif messageType == MessageType.CHOOSE_CARD["name"]:
+    elif messageType == MessageType.CHOOSE_CARD:
         return createChooseCard(*args)
-    elif messageType == MessageType.REJECT_CARD["name"]:
+    elif messageType == MessageType.REJECT_CARD:
         return createRejectCard(*args)
-    elif messageType == MessageType.REQUEST_SESSION_CHOICE["name"]:
+    elif messageType == MessageType.REQUEST_SESSION_CHOICE:
         return createRequestSessionChoice(*args)
-    elif messageType == MessageType.CHOOSE_SESSION["name"]:
+    elif messageType == MessageType.CHOOSE_SESSION:
         return createChooseSession(*args)
-    elif messageType == MessageType.SESSION_JOINED["name"]:
+    elif messageType == MessageType.SESSION_JOINED:
         return createSessionJoined(*args)
-    elif messageType == MessageType.BROADCAST_SESSION_JOINED["name"]:
+    elif messageType == MessageType.BROADCAST_SESSION_JOINED:
         return createBroadcastSessionJoined(*args)
-    elif messageType == MessageType.BAD_MESSAGE["name"]:
+    elif messageType == MessageType.BAD_MESSAGE:
         return createBadMessage(*args)
-    elif messageType == MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE["name"]:
+    elif messageType == MessageType.BROADCAST_TOURNAMENT_RANKING_TABLE:
         return createTournamentRankingTable(*args)
-    elif messageType == MessageType.START_TOURNAMENT["name"]:
+    elif messageType == MessageType.START_TOURNAMENT:
         return createStartTournament()
-    elif messageType == MessageType.BROADCAST_TOURNAMENT_STARTED["name"]:
+    elif messageType == MessageType.BROADCAST_TOURNAMENT_STARTED:
         return createBroadcastTournamentStarted()
-    elif messageType == MessageType.JOIN_BOT["name"]:
+    elif messageType == MessageType.JOIN_BOT:
         return createJoinBot(args)
     else:
         raise 'Unknown message type ' + messageType
