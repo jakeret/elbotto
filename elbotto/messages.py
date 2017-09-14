@@ -18,8 +18,8 @@ class RoundScore(object):
 
     def __init__(self, name, points, currentRoundPoints):
         self.team_name = name
-        self.points = points
-        self.current_round_points = currentRoundPoints
+        self.total_points = points
+        self.current_game_points = currentRoundPoints
 
 
 class Team(object):

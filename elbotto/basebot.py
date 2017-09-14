@@ -29,6 +29,7 @@ class BaseBot(object):
         self.teams = None
         self.handCards= []
         self.won_stich_in_game = []
+        self.last_round_points = 0
 
     def start(self):
         Connection.create(self.server_address, self)
@@ -57,7 +58,7 @@ class BaseBot(object):
             logger.info('session choice answer: %s', answer)
             
         elif message_type == MessageType.DEAL_CARDS["name"]:
-            #CHALLENGE2017: Getting cards from server... just put them to your handcards
+            self.last_round_points = 0
             self.handCards = data
 
         elif message_type == MessageType.REQUEST_TRUMPF["name"]:
@@ -93,6 +94,7 @@ class BaseBot(object):
             else:
                 round_points = 0
 
+            self.last_round_points = round_points
             self.handle_stich(winner, round_points, total_points)
 
         elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED["name"]:
@@ -136,7 +138,7 @@ class BaseBot(object):
         pass
 
     def handle_game_finished(self):
-        # Do nothing with that :-)
+        self.last_round_points = 0
         pass
 
     def handle_reject_card(self, data):
@@ -159,14 +161,14 @@ class BaseBot(object):
     def round_points(self, scores):
         for score in scores:
             if self.my_team.name == score.team_name:
-                return score.current_round_points
+                return score.current_game_points - self.last_round_points
 
         return 0
 
     def total_points(self, scores):
         for score in scores:
             if self.my_team.name == score.team_name:
-                return score.points
+                return score.total_points
 
         return 0
 
