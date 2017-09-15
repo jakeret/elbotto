@@ -8,7 +8,8 @@ logger = logging.getLogger(__name__)
 
 class Bot(BaseBot):
     """
-    Trivial bot using the DEFAULT_TRUMPF and randomly returning a card available in the hand
+    Trivial bot using DEFAULT_TRUMPF and randomly returning a card available in the hand.
+    This is a simple port of the original Java Script implementation
     """
 
     def __init__(self, server_address, name, chosen_team_index=0):
