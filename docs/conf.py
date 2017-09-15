@@ -254,8 +254,8 @@ texinfo_documents = [
 #texinfo_no_detailmenu = False
 
 try:
-    import sphinx_eth_theme
-    html_theme = "sphinx_eth_theme"
-    html_theme_path = [sphinx_eth_theme.get_html_theme_path()]
+    import sphinx_rtd_theme
+    html_theme = "sphinx_rtd_theme"
+    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 except ImportError:
     html_theme = 'default'
