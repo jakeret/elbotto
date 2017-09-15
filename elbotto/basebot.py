@@ -33,6 +33,7 @@ class BaseBot(object):
         self.last_round_points = 0
 
     def start(self):
+        logger.info("Connecting to %s", self.server_address)
         Connection.create(self.server_address, self)
 
     def handle_message(self, message):
