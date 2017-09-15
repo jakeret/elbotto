@@ -2,6 +2,17 @@
 El botto del Jasso
 =============================
 
+.. image:: https://readthedocs.org/projects/elbotto/badge/?version=latest
+	:target: http://elbotto.readthedocs.io/en/latest/?badge=latest
+	:alt: Documentation Status
+
+.. image:: https://travis-ci.org/jakeret/elbotto.svg?branch=master
+        :target: https://travis-ci.org/jakeret/elbotto
+
+.. image:: https://coveralls.io/repos/jakeret/elbotto/badge.svg?branch=master
+        :target: https://coveralls.io/r/jakeret/elbotto?branch=master
+
+
 A Python Jass client bot skeleton for the Zuhlke Jass Bot challenge (https://github.com/webplatformz/challenge)
 
 This client allows you to easily develop a bot for the Jass challenge.
