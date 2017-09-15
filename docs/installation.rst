@@ -2,12 +2,7 @@
 Installation
 ============
 
-At the command line either via easy_install or pip::
+At the command line::
 
-    $ easy_install elbotto
-    $ pip install elbotto
+    $ python setup.py develop --user
 
-Or, if you have virtualenvwrapper installed::
-
-    $ mkvirtualenv elbotto
-    $ pip install elbotto

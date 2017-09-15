@@ -18,6 +18,13 @@ DEFAULT_TRUMPF = GameType("TRUMPF", card.Color.HEARTS.name)
 
 
 class BaseBot(object):
+    """
+    Base class for a Jass bot
+
+    :param server_address: the web socket address of the server
+    :param name: the name of the bot
+    :param chosen_team_index: (optional) the index of the team to join
+    """
 
     connection = None
 

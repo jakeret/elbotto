@@ -4,4 +4,10 @@ Usage
 
 To use El botto del Jass in a project::
 
-	import elbotto
+	python elbotto/launcher.py
+
+
+This will start one bot. To start a tournament run::
+
+    python elbotto/tournament.py
+
