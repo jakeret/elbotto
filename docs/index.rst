@@ -21,7 +21,4 @@ Contents:
 Feedback
 ========
 
-If you have any suggestions or questions about **El botto del Jass** feel free to email me
-at joel.akeret@zuehlke.com.
-
 If you encounter any errors or problems with **El botto del Jass**, please let me know!

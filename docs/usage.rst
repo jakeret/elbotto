@@ -11,3 +11,4 @@ This will start one bot. To start a tournament run::
 
     python elbotto/tournament.py
 
+To start hacking have a look at the `elbotto.bots` package
