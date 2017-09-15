@@ -29,8 +29,10 @@ class Connection(object):
             payload_data = payload["data"]
         except KeyError:
             payload_data = {}
-        incoming = messages.create(type, payload_data)
+
+        incoming = payload
         try:
+            incoming = messages.create(type, payload_data)
             self.bot.handle_message(incoming)
         except:
             logger.exception("Handling %s caused an error", incoming)

@@ -5,9 +5,11 @@ from elbotto.card import Card, Color
 
 class GameType(object):
 
-    def __init__(self, mode, trumpfColor):
+    def __init__(self, mode, trumpfColor=None):
         self.mode = mode
-        self.trumpf_color = Color[trumpfColor]
+
+        if trumpfColor is not None:
+            self.trumpf_color = Color[trumpfColor]
 
     def __repr__(self):
         return "% s | % s"%(self.mode, self.trumpf_color)
@@ -258,7 +260,10 @@ def create(type, *args):
     if isinstance(type, MessageType):
         messageType = type
     else:
-        messageType = MessageType[type]
+        try:
+            messageType = MessageType[type]
+        except:
+            raise 'Unknown message type ' + type
 
     if messageType == MessageType.REQUEST_PLAYER_NAME:
         return createRequestPlayerName()
