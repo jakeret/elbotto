@@ -7,6 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 class Bot(BaseBot):
+    """
+    Trivial bot using the DEFAULT_TRUMPF and randomly returning a card available in the hand
+    """
 
     def __init__(self, server_address, name, chosen_team_index=0):
         super(Bot, self).__init__(server_address, name, chosen_team_index)
@@ -46,7 +49,7 @@ class PlayStrategy(object):
         self.cardsAtTable = []
 
     def chooseTrumpf(self, handcards):
-        #CHALLENGE2017: Implement logic to chose game mode which is best suited to your handcards or schiäbä.
+        #CHALLENGE2017: Implement logic to chose game mode which is best suited to your handcards or schiaebae.
         # Consider that this decision ist quite crucial for your bot to be competitive
         # Use hearts as TRUMPF for now
         return DEFAULT_TRUMPF
