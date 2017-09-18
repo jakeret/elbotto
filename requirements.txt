@@ -1,1 +1,4 @@
 websocket-client
+-e https://github.com/reinforceio/tensorforce.git
+tensorflow
+tensorflow-gpu
