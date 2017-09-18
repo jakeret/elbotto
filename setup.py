@@ -11,11 +11,6 @@ except ImportError:
     from distutils.core import setup
 
 
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
-
-
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -29,11 +24,6 @@ class PyTest(TestCommand):
 
 
 readme = open('README.rst').read()
-doclink = """
-Documentation
--------------
-
-The full documentation can be generated with Sphinx"""
 
 history = open('HISTORY.rst').read().replace('.. :changelog:', '')
 
@@ -46,28 +36,24 @@ setup(
     name='elbotto',
     version='0.1.0',
     description='Jass bot skeleton',
-    long_description=readme + '\n\n' + doclink + '\n\n' + history,
+    long_description=readme + '\n\n' + history,
     author='Joel Akeret',
     author_email='joel.akeret@zuehlke.com',
-    url='https://github.com/jakeret',
+    url='https://github.com/jakeret/elbotto',
     packages=find_packages(PACKAGE_PATH, "test"),
     package_dir={'elbotto': 'elbotto'},
     include_package_data=True,
     install_requires=requires,
-    license='Proprietary',
+    license='GPLv3',
     zip_safe=False,
     keywords='elbotto',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
-        "Intended Audience :: Science/Research",
         'Intended Audience :: Developers',
         'License :: Other/Proprietary License',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.6',
     ],
     tests_require=tests_require,
     cmdclass = {'test': PyTest},
