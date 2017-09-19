@@ -9,9 +9,6 @@ El botto del Jasso
 .. image:: https://travis-ci.org/jakeret/elbotto.svg?branch=master
         :target: https://travis-ci.org/jakeret/elbotto
 
-.. image:: https://coveralls.io/repos/jakeret/elbotto/badge.svg?branch=master
-        :target: https://coveralls.io/r/jakeret/elbotto?branch=master
-
 
 A Python Jass client bot skeleton for the Zuhlke Jass Bot challenge (https://github.com/webplatformz/challenge)
 
@@ -27,9 +24,9 @@ https://jass-challenge.zuehlke.io/
 
 
 
-=============================
-Start hacking
-=============================
+=========================================
+Start hacking (taken from the JS bot)
+=========================================
 
 ---------------
 Overview
