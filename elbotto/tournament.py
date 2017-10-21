@@ -1,7 +1,7 @@
 import threading
 
 from elbotto import launcher
-from elbotto.strategy import stochastic
+from elbotto.bots import stochastic
 
 DEFAULT_BOT_NAME = "El botto del jasso"
 
