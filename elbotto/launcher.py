@@ -1,7 +1,7 @@
 import logging
 
 from elbotto.connection import Connection
-from elbotto.strategy import stochastic
+from elbotto.bots import stochastic
 
 logging.basicConfig(level=logging.INFO)
 
