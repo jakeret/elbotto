@@ -105,13 +105,14 @@ class BaseBot(object):
             won_stich = self.in_my_team(winner)
             self.won_stich_in_game.append(won_stich)
             total_points = self.total_points(data["score"])
+            current_game_points = self.current_game_points(data["score"])
 
             if won_stich:
-                round_points = self.round_points(data["score"])
+                round_points = current_game_points - self.last_round_points
             else:
                 round_points = 0
 
-            self.last_round_points = round_points
+            self.last_round_points = current_game_points
             self.handle_stich(winner, round_points, total_points)
 
         elif message_type == MessageType.BROADCAST_TOURNAMENT_STARTED:
@@ -175,10 +176,10 @@ class BaseBot(object):
         return self.my_team.is_member(winner)
         # return self.player == winner
 
-    def round_points(self, scores):
+    def current_game_points(self, scores):
         for score in scores:
             if self.my_team.name == score.team_name:
-                return score.current_game_points - self.last_round_points
+                return score.current_game_points
 
         return 0
 
