@@ -15,8 +15,11 @@ class GameType(object):
         return "% s | % s"%(self.mode, self.trumpf_color)
 
     def to_dict(self):
-        return dict(mode = self.mode,
+        if hasattr(self, 'trumpf_color'):
+            return dict(mode = self.mode,
                     trumpfColor = self.trumpf_color.name)
+
+        return dict(mode=self.mode)
 
 class RoundScore(object):
 
